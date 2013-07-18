@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.View;
 import android.widget.ListView;
 
 import com.dreaner.penti.R;
@@ -22,6 +23,7 @@ public class TushuoActivity extends Activity {
 	private List<TushuoPartItem> mData;
 	private Handler mHandler;
 	private TushuoAdapter mAdapter;
+	private View mLoading;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +33,7 @@ public class TushuoActivity extends Activity {
 		initImageLoader();
 		setContentView(R.layout.ac_image_list);
 		ListView listview = (ListView) findViewById(R.id.list);
+		mLoading = findViewById(R.id.loading);
 		mAdapter = new TushuoAdapter(getLayoutInflater());
 		listview.setAdapter(mAdapter);
 
@@ -44,6 +47,7 @@ public class TushuoActivity extends Activity {
 
 					@Override
 					public void run() {
+						mLoading.setVisibility(View.GONE);
 						mAdapter.setData(mData);
 						mAdapter.notifyDataSetChanged();
 					}
@@ -72,8 +76,7 @@ public class TushuoActivity extends Activity {
 
 	private void initImageLoader() {
 		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
-				.threadPriority(Thread.NORM_PRIORITY - 2)
-				.denyCacheImageMultipleSizesInMemory()
+				.threadPriority(Thread.NORM_PRIORITY - 2).denyCacheImageMultipleSizesInMemory()
 				.discCacheFileNameGenerator(new Md5FileNameGenerator())
 				.tasksProcessingOrder(QueueProcessingType.LIFO).enableLogging().build();
 		// Initialize ImageLoader with configuration.
