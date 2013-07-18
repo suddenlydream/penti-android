@@ -9,6 +9,7 @@ package com.dreaner.penti.core.ui;
 
 import java.util.List;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +29,7 @@ import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
  * 
  */
 public class TushuoAdapter extends BaseAdapter {
-
+	private static final String TAG = "TushuoAdapter";
 	private LayoutInflater mInflater;
 	private List<TushuoPartItem> mData;
 	private ImageLoader mImageLoader = ImageLoader.getInstance();
@@ -71,7 +72,7 @@ public class TushuoAdapter extends BaseAdapter {
 		View view = convertView;
 		final ViewHolder holder;
 		if (convertView == null) {
-			view = mInflater.inflate(R.layout.item_list_image, parent, false);
+			view = mInflater.inflate(R.layout.item_list_image, null);
 			holder = new ViewHolder();
 			holder.text = (TextView) view.findViewById(R.id.text);
 			holder.image = (ImageView) view.findViewById(R.id.image);
@@ -84,7 +85,10 @@ public class TushuoAdapter extends BaseAdapter {
 		if (model != null) {
 			holder.text.setText(model.getText());
 			if (model.getImage() != null && model.getImage().length() > 0) {
+				Log.d(TAG, "load bitmap: " + model.getImage() + " pos: " + position);
 				mImageLoader.displayImage(model.getImage(), holder.image, mOptions);
+			}else{
+				holder.image.setImageBitmap(null);
 			}
 		}
 		return view;
