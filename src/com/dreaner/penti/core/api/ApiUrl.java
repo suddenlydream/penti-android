@@ -12,6 +12,7 @@ package com.dreaner.penti.core.api;
  * @date 2013-7-18
  *
  */
-public class API_URL {
-	public static final String TUSHUO = "http://dapenti.sinaapp.com/";
+public class ApiUrl {
+	public static final String TUSHUO = "http://dapenti.sinaapp.com/tushuo";
+	public static final String SUMMARY = "http://dapenti.sinaapp.com/summary";
 }

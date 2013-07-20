@@ -13,6 +13,7 @@ import java.util.List;
 import com.dreaner.penti.core.api.result.Tushuo;
 import com.dreaner.penti.core.api.result.TushuoPart;
 import com.dreaner.penti.core.api.result.TushuoPartItem;
+import com.dreaner.penti.core.api.result.TushuoSummary;
 import com.dreaner.penti.util.json.JacksonUtils;
 
 /**
@@ -21,7 +22,7 @@ import com.dreaner.penti.util.json.JacksonUtils;
  * 
  */
 public class DataTransHelper {
-	public static List<TushuoPartItem> transFromJsonStr(String json) {
+	public static List<TushuoPartItem> parseTushuo(String json) {
 		Tushuo tushuo = JacksonUtils.shareJacksonUtils().parseJson2Obj(json, Tushuo.class);
 		List<TushuoPartItem> result = new ArrayList<TushuoPartItem>();
 		if (tushuo != null) {
@@ -31,5 +32,9 @@ public class DataTransHelper {
 			}
 		}
 		return result;
+	}
+	
+	public static List<TushuoSummary> parseSummary(String json) {
+		return JacksonUtils.shareJacksonUtils().parseJson2List(json, TushuoSummary.class);
 	}
 }

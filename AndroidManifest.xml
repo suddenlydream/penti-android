@@ -18,6 +18,11 @@
         <activity
             android:name="com.dreaner.penti.core.ui.TushuoActivity"
             android:theme="@android:style/Theme.Light.NoTitleBar" >
+        </activity>
+        
+        <activity
+            android:name="com.dreaner.penti.core.ui.SummaryActivity"
+            android:theme="@android:style/Theme.Light.NoTitleBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -8,22 +8,25 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 import com.dreaner.penti.R;
 import com.dreaner.penti.core.api.TushuoApi;
-import com.dreaner.penti.core.api.result.TushuoPartItem;
+import com.dreaner.penti.core.api.result.TushuoSummary;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 
-public class TushuoActivity extends Activity {
-	private static final String TAG = "TushuoActivity";
-	private List<TushuoPartItem> mData;
+public class SummaryActivity extends Activity implements OnItemClickListener {
+	private static final String TAG = "SummaryActivity";
+	private List<TushuoSummary> mData;
 	private Handler mHandler;
-	private TushuoAdapter mAdapter;
+	private SummaryAdapter mAdapter;
 	private View mLoading;
 
 	@Override
@@ -33,8 +36,9 @@ public class TushuoActivity extends Activity {
 		initImageLoader();
 		setContentView(R.layout.ac_image_list);
 		ListView listview = (ListView) findViewById(R.id.list);
+		listview.setOnItemClickListener(this);
 		mLoading = findViewById(R.id.loading);
-		mAdapter = new TushuoAdapter(getLayoutInflater());
+		mAdapter = new SummaryAdapter(getLayoutInflater());
 		listview.setAdapter(mAdapter);
 		loadData();
 	}
@@ -43,7 +47,8 @@ public class TushuoActivity extends Activity {
 		@Override
 		public void onSuccess(String content) {
 			Log.d(TAG, "onSuccess: " + content);
-			mData = DataTransHelper.parseTushuo(content);
+
+			mData = DataTransHelper.parseSummary(content);
 			mHandler.post(new Runnable() {
 
 				@Override
@@ -59,6 +64,7 @@ public class TushuoActivity extends Activity {
 		public void onFailure(Throwable error, String content) {
 			Log.d(TAG, "onFailure: " + content);
 			super.onFailure(error, content);
+			Toast.makeText(SummaryActivity.this, "下载数据错误", Toast.LENGTH_SHORT).show();
 		}
 
 		@Override
@@ -75,13 +81,7 @@ public class TushuoActivity extends Activity {
 	};
 
 	private void loadData() {
-		Intent intent = getIntent();
-		if (intent == null) {
-			return;
-		}
-
-		String date = intent.getStringExtra("date");
-		TushuoApi.requestTushuo(mResponse, date);
+		TushuoApi.requestSummary(mResponse);
 	}
 
 	private void initImageLoader() {
@@ -91,5 +91,19 @@ public class TushuoActivity extends Activity {
 				.enableLogging().build();
 		// Initialize ImageLoader with configuration.
 		ImageLoader.getInstance().init(config);
+	}
+
+	@Override
+	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+		TushuoSummary item = mData.get(arg2);
+		if (item != null) {
+			String date = item.getDate();
+			if (date != null) {
+				Intent intent = new Intent();
+				intent.setClass(this, TushuoActivity.class);
+				intent.putExtra("date", date);
+				startActivity(intent);
+			}
+		}
 	}
 }
